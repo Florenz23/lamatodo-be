@@ -1,0 +1,79 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Task Management",
+        "description": "API for adding and retrieving tasks with a priority.",
+        "version": "v1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://add-task-xamurzhima-uc.a.run.app"
+        }
+    ],
+    "paths": {
+        "/add_task": {
+            "post": {
+                "description": "Add a new task",
+                "operationId": "AddTask",
+                "requestBody": {
+                    "description": "Task to add",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Task"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task added successfully"
+                    },
+                    "400": {
+                        "description": "No task provided"
+                    }
+                }
+            }
+        },
+        "/get_tasks": {
+            "get": {
+                "description": "Retrieve all tasks",
+                "operationId": "GetTasks",
+                "responses": {
+                    "200": {
+                        "description": "Tasks retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Task"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Task": {
+                "type": "object",
+                "properties": {
+                    "task": {
+                        "type": "string",
+                        "description": "The task to add"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "description": "The priority of the task"
+                    }
+                },
+                "required": ["task"]
+            }
+        }
+    }
+}

@@ -8,6 +8,7 @@ from firebase_admin import db
 from firebase_functions import https_fn
 from firebase_admin import initialize_app, credentials
 import os
+import json
 
 credential_path = "lamatodo-be-1e97f3e1a9d8.json"
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
@@ -23,15 +24,11 @@ initialize_app(cred, {
 ref = db.reference('tasks')
 
 #
-#
-@https_fn.on_request()
-def on_request_example(req: https_fn.Request) -> https_fn.Response:
-    return https_fn.Response("Hello world!")
 
 FAKE_UID = "123456"  # Replace with your fake UID
 
 @https_fn.on_request()
-def add_task(req: https_fn.Request) -> https_fn.Response:
+def addTask(req: https_fn.Request) -> https_fn.Response:
     task = req.get_json().get('task', None)
     priority = req.get_json().get('priority', None)
     if task is None:
@@ -48,3 +45,14 @@ def add_task(req: https_fn.Request) -> https_fn.Response:
     })
 
     return https_fn.Response("Task added successfully")
+
+
+@https_fn.on_request()
+def getTasks(req: https_fn.Request) -> https_fn.Response:
+    # Create a reference to the user's tasks in the database
+    user_tasks_ref = ref.child(FAKE_UID)
+
+    # Get all tasks
+    tasks = user_tasks_ref.get()
+
+    return https_fn.Response(json.dumps(tasks), mimetype='application/json')
