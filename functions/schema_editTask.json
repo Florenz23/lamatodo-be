@@ -1,0 +1,76 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "Task Management",
+      "description": "API for editing tasks with a priority.",
+      "version": "v1.0.0"
+    },
+    "servers": [
+      {
+        "url": "https://edittask-xamurzhima-uc.a.run.app"
+      }
+    ],
+    "paths": {
+      "/edit_task": {
+        "post": {
+          "description": "Edit an existing task",
+          "operationId": "EditTask",
+          "requestBody": {
+            "description": "Task details to edit",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditTask"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Task edited successfully"
+            },
+            "400": {
+              "description": "No task details provided"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Task": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The task"
+            },
+            "priority": {
+              "type": "string",
+              "description": "The priority of the task"
+            }
+          },
+          "required": ["task"]
+        },
+        "EditTask": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string",
+              "description": "The ID of the task to edit"
+            },
+            "task": {
+              "type": "string",
+              "description": "The new task"
+            },
+            "priority": {
+              "type": "string",
+              "description": "The new priority of the task"
+            }
+          },
+          "required": ["task_id", "task"]
+        }
+      }
+    }
+  }

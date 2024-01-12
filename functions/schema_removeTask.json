@@ -1,0 +1,54 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Task Management",
+    "description": "API for editing and removing tasks with a priority.",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://removetask-xamurzhima-uc.a.run.app"
+    }
+  ],
+  "paths": {
+    "/remove_task": {
+      "post": {
+        "description": "Remove an existing task",
+        "operationId": "RemoveTask",
+        "requestBody": {
+          "description": "Task ID to remove",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task removed successfully"
+          },
+          "400": {
+            "description": "No task ID provided"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RemoveTask": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "description": "The ID of the task to remove"
+          }
+        },
+        "required": ["task_id"]
+      }
+    }
+  }
+}
