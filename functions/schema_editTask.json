@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
       "title": "Task Management",
-      "description": "API for editing tasks with a priority.",
+      "description": "API for editing tasks with a priority, and date.",
       "version": "v1.0.0"
     },
     "servers": [
@@ -49,6 +49,10 @@
             "priority": {
               "type": "string",
               "description": "The priority of the task"
+            },
+            "date": {
+              "type": "timestamp",
+              "description": "The date of the task as timestamp"
             }
           },
           "required": ["task"]
@@ -67,6 +71,10 @@
             "priority": {
               "type": "string",
               "description": "The new priority of the task"
+            },
+            "date": {
+              "type": "timestamp",
+              "description": "The new date of the task"
             }
           },
           "required": ["task_id", "task"]

@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "Task Management",
-        "description": "API for adding and retrieving tasks with a priority.",
+        "description": "API for adding and retrieving tasks with a priority, and date.",
         "version": "v1.0.0"
     },
     "servers": [
@@ -35,27 +35,6 @@
                     }
                 }
             }
-        },
-        "/get_tasks": {
-            "get": {
-                "description": "Retrieve all tasks",
-                "operationId": "GetTasks",
-                "responses": {
-                    "200": {
-                        "description": "Tasks retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Task"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "components": {
@@ -70,6 +49,10 @@
                     "priority": {
                         "type": "string",
                         "description": "The priority of the task"
+                    },
+                    "date": {
+                        "type": "timestamp",
+                        "description": "Date as timestmap in seconds"
                     }
                 },
                 "required": ["task"]
