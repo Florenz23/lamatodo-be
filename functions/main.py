@@ -13,6 +13,9 @@ from datetime import datetime
 
 import pytz
 
+from src.parser import parse_subtasks, parse_date
+
+
 credential_path = "lamatodo-be-1e97f3e1a9d8.json"
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
@@ -50,24 +53,15 @@ def getCurrentDate(req: https_fn.Request) -> https_fn.Response:
 def addTask(req: https_fn.Request) -> https_fn.Response:
     task = req.get_json().get('task', None)
     priority = req.get_json().get('priority', None)
-    date_str = req.get_json().get('date', None)
     label = req.get_json().get('label', None)
-    subtasks = req.get_json().get('subtasks', None)
-
-    # subtasks is a string seperated by ;   
-    subtasks = subtasks.split(";")
+    subtasks = parse_subtasks(req.get_json().get('subtasks', None))
+    try:
+        date = parse_date(req.get_json().get('date', None))
+    except ValueError as e:
+        return https_fn.Response(str(e), status=400)
 
     if task is None:
         return https_fn.Response("No task provided", status=400)
-
-    if date_str is not None:
-        try:
-            # Parse the date string into a datetime object
-            date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
-        except ValueError:
-            return https_fn.Response("Invalid date format", status=400)
-    else:
-        date = None
 
     # Create a reference to the user's tasks in the database
     user_tasks_ref = ref.child(FAKE_UID)
@@ -77,7 +71,7 @@ def addTask(req: https_fn.Request) -> https_fn.Response:
     new_task_ref.set({
         'task': task,
         'priority': priority,
-        'date': date.isoformat() if date else None,
+        'date': date,
         'label': label,
         'subtasks': subtasks
     })
@@ -91,24 +85,16 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
     task_id = req.get_json().get('task_id', None)
     new_task = req.get_json().get('task', None)
     new_priority = req.get_json().get('priority', None)
-    date_str = req.get_json().get('date', None)
     label = req.get_json().get('label', None)
-    subtasks = req.get_json().get('subtasks', None)
+    subtasks = parse_subtasks(req.get_json().get('subtasks', None))
+    try:
+        date = parse_date(req.get_json().get('date', None))
+    except ValueError as e:
+        return https_fn.Response(str(e), status=400)
 
-    # subtasks is a string seperated by ;   
-    subtasks = subtasks.split(";")
 
     if task_id is None or new_task is None:
         return https_fn.Response("Task ID or new task details not provided", status=400)
-
-    if date_str is not None:
-        try:
-            # Parse the date string into a datetime object
-            date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
-        except ValueError:
-            return https_fn.Response("Invalid date format", status=400)
-    else:
-        date = None
 
     # Create a reference to the specific task in the database
     task_ref = ref.child(FAKE_UID).child(task_id)
@@ -117,7 +103,7 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
     task_ref.update({
         'task': new_task,
         'priority': new_priority,
-        'date': date.isoformat() if date else None,
+        'date': date,
         'label': label,
         'subtasks': subtasks
     })
