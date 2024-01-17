@@ -51,9 +51,18 @@
               "description": "The priority of the task"
             },
             "date": {
-              "type": "timestamp",
-              "description": "The date of the task as timestamp"
-            }
+              "type": "string",
+              "format": "date-time",
+              "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
+            },
+            "label": {
+              "type": "string",
+              "description": "The label of the task"
+          },
+          "subtasks": {
+              "type": "string",
+              "description": "The subtasks of the task, separated by semicolons"
+          }
           },
           "required": ["task"]
         },
@@ -73,9 +82,18 @@
               "description": "The new priority of the task"
             },
             "date": {
-              "type": "timestamp",
-              "description": "The new date of the task"
-            }
+              "type": "string",
+              "format": "date-time",
+              "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
+            },
+            "label": {
+              "type": "string",
+              "description": "The label of the task"
+          },
+          "subtasks": {
+              "type": "string",
+              "description": "The subtasks of the task, separated by semicolons"
+          }
           },
           "required": ["task_id", "task"]
         }

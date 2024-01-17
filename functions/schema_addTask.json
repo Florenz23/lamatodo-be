@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://add-task-xamurzhima-uc.a.run.app"
+            "url": "https://addtask-xamurzhima-uc.a.run.app"
         }
     ],
     "paths": {
@@ -51,11 +51,22 @@
                         "description": "The priority of the task"
                     },
                     "date": {
-                        "type": "timestamp",
-                        "description": "Date as timestmap in seconds"
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "The label of the task"
+                    },
+                    "subtasks": {
+                        "type": "string",
+                        "description": "The subtasks of the task, separated by semicolons"
                     }
                 },
-                "required": ["task"]
+                "required": [
+                    "task"
+                ]
             }
         }
     }
