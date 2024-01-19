@@ -27,7 +27,9 @@ initialize_app(cred, {
     'databaseURL': 'https://lamatodo-be-default-rtdb.firebaseio.com/'
 })
 
-ref = db.reference('tasks')
+ref = db.reference('user_data')
+ref_tasks = ref.child('tasks')
+# ref = db.reference('tasks')
 
 #
 
@@ -60,32 +62,40 @@ def getCurrentDate(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request()
 def addTask(req: https_fn.Request) -> https_fn.Response:
-    task = req.get_json().get('task', None)
+    title = req.get_json().get('title', None)
+    description = req.get_json().get('description', None)
     priority = req.get_json().get('priority', None)
     label = req.get_json().get('label', None)
     recurring_task = parse_recurring_task(req.get_json().get('recurring_task', None))
     subtasks = parse_subtasks(req.get_json().get('subtasks', None))
+    project_id = req.get_json().get('project_id', None)
     try:
         date = parse_date(req.get_json().get('date', None))
     except ValueError as e:
         return https_fn.Response(str(e), status=400)
 
-    if task is None:
+    if title is None:
         return https_fn.Response("No task provided", status=400)
 
+    if project_id is None:
+        return https_fn.Response("No project_id provided", status=400)
+
     # Create a reference to the user's tasks in the database
-    user_tasks_ref = ref.child(FAKE_UID)
+    # user_tasks_ref = ref_tasks.child(FAKE_UID)
+    user_tasks_ref = ref_tasks
 
     # Push a new task to the user's tasks
     new_task_ref = user_tasks_ref.push()
     new_task = {
-        'task': task,
+        'title': title,
+        'description': description,
         "done": "false",
         'priority': priority,
         'label': label,
         'recurring_task': recurring_task,
         'subtasks': subtasks,
         'date': date,
+        'project_id': project_id,
     }
     new_task_ref.set(new_task)
 
@@ -104,11 +114,12 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
         return https_fn.Response("Task ID not provided", status=400)
 
     # Create a reference to the specific task in the database
-    task_ref = ref.child(FAKE_UID).child(task_id)
+    # task_ref = ref.child(FAKE_UID).child(task_id)
+    task_ref = ref_tasks.child(task_id)
 
     # Get the fields to be updated
     fields_to_update = {}
-    for field in ['task', 'done', 'priority', 'label', 'recurring_task', 'subtasks', 'date']:
+    for field in ['title', 'desciption', 'done', 'priority', 'label', 'recurring_task', 'subtasks', 'date', 'project_id']:
         if field in req.get_json():
             if field == 'recurring_task':
                 fields_to_update[field] = parse_recurring_task(req.get_json().get(field))
@@ -132,7 +143,8 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
 @https_fn.on_request()
 def getTasks(req: https_fn.Request) -> https_fn.Response:
     # Create a reference to the user's tasks in the database
-    user_tasks_ref = ref.child(FAKE_UID)
+    # user_tasks_ref = ref.child(FAKE_UID)
+    user_tasks_ref = ref_tasks
 
     # Get all tasks
     tasks = user_tasks_ref.get()
@@ -147,9 +159,41 @@ def removeTask(req: https_fn.Request) -> https_fn.Response:
         return https_fn.Response("Task ID not provided", status=400)
 
     # Create a reference to the specific task in the database
-    task_ref = ref.child(FAKE_UID).child(task_id)
+    # task_ref = ref.child(FAKE_UID).child(task_id)
+    task_ref = ref_tasks.child(task_id)
 
     # Remove the task
     task_ref.delete()
 
     return https_fn.Response("Task removed successfully")
+
+
+@https_fn.on_request()
+def addProject(req: https_fn.Request) -> https_fn.Response:
+    data = req.get_json()
+
+    # Check if name and user_id are provided
+    if 'name' not in data or 'user_id' not in data:
+        return https_fn.Response("Both name and user_id are required", status=400)
+
+    # Create a reference to the projects in the database
+    projects_ref = ref.child('projects')
+
+    # Add the new project
+    new_project_ref = projects_ref.push({
+        'name': data['name'],
+        'user_id': data['user_id']
+    })
+
+    return https_fn.Response(f"project_id: {new_project_ref.key}")
+
+
+@https_fn.on_request()
+def getProjects(req: https_fn.Request) -> https_fn.Response:
+    # Create a reference to the projects in the database
+    projects_ref = ref.child('projects')
+
+    # Get all projects
+    all_projects = projects_ref.get()
+
+    return https_fn.Response(json.dumps(all_projects), mimetype='application/json')
