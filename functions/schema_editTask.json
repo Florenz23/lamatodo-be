@@ -1,102 +1,125 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-      "title": "Task Management",
-      "description": "API for editing tasks with a priority, and date.",
-      "version": "v1.0.0"
-    },
-    "servers": [
-      {
-        "url": "https://edittask-xamurzhima-uc.a.run.app"
-      }
-    ],
-    "paths": {
-      "/edit_task": {
-        "post": {
-          "description": "Edit an existing task",
-          "operationId": "EditTask",
-          "requestBody": {
-            "description": "Task details to edit",
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EditTask"
-                }
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Task Management",
+    "description": "API for editing tasks with a priority, and date.",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://edittask-xamurzhima-uc.a.run.app"
+    }
+  ],
+  "paths": {
+    "/edit_task": {
+      "post": {
+        "description": "Edit an existing task",
+        "operationId": "EditTask",
+        "requestBody": {
+          "description": "Task details to edit",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditTask"
               }
             }
-          },
-          "responses": {
-            "200": {
-              "description": "Task edited successfully"
-            },
-            "400": {
-              "description": "No task details provided"
-            }
           }
-        }
-      }
-    },
-    "components": {
-      "schemas": {
-        "Task": {
-          "type": "object",
-          "properties": {
-            "task": {
-              "type": "string",
-              "description": "The task"
-            },
-            "priority": {
-              "type": "string",
-              "description": "The priority of the task"
-            },
-            "date": {
-              "type": "string",
-              "format": "date-time",
-              "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
-            },
-            "label": {
-              "type": "string",
-              "description": "The label of the task"
-          },
-          "subtasks": {
-              "type": "string",
-              "description": "The subtasks of the task, separated by semicolons"
-          }
-          },
-          "required": ["task"]
         },
-        "EditTask": {
-          "type": "object",
-          "properties": {
-            "task_id": {
-              "type": "string",
-              "description": "The ID of the task to edit"
-            },
-            "task": {
-              "type": "string",
-              "description": "The new task"
-            },
-            "priority": {
-              "type": "string",
-              "description": "The new priority of the task"
-            },
-            "date": {
-              "type": "string",
-              "format": "date-time",
-              "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
-            },
-            "label": {
-              "type": "string",
-              "description": "The label of the task"
+        "responses": {
+          "200": {
+            "description": "Task edited successfully"
           },
-          "subtasks": {
-              "type": "string",
-              "description": "The subtasks of the task, separated by semicolons"
+          "400": {
+            "description": "No task details provided"
           }
-          },
-          "required": ["task_id", "task"]
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The task"
+          },
+          "done": {
+            "type": "boolean",
+            "description": "If the task is done or not"
+          },
+          "priority": {
+            "type": "string",
+            "description": "The priority of the task"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of the task"
+          },
+          "recurring_task": {
+            "type": "string",
+            "pattern": "^(mo|tu|we|th|fr|sa|su)(;\\s?(mo|tu|we|th|fr|sa|su))*$",
+            "description": "The days of the week when the task recurs, separated by semicolons. Use two-letter abbreviations: mo, tu, we, th, fr, sa, su."
+        },
+          "subtasks": {
+            "type": "string",
+            "description": "The subtasks of the task, separated by semicolons"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      },
+      "EditTask": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "description": "The ID of the task to edit"
+          },
+          "task": {
+            "type": "string",
+            "description": "The new task"
+          },
+          "done": {
+            "type": "boolean",
+            "description": "If the task is done or not"
+          },
+          "priority": {
+            "type": "string",
+            "description": "The new priority of the task"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
+          },
+          "recurring_task": {
+            "type": "string",
+            "pattern": "^(mo|tu|we|th|fr|sa|su)(;\\s?(mo|tu|we|th|fr|sa|su))*$",
+            "description": "The days of the week when the task recurs, separated by semicolons. Use two-letter abbreviations: mo, tu, we, th, fr, sa, su."
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of the task"
+          },
+          "subtasks": {
+            "type": "string",
+            "description": "The subtasks of the task, separated by semicolons"
+          }
+        },
+        "required": [
+          "task_id",
+          "task"
+        ]
+      }
+    }
   }
+}

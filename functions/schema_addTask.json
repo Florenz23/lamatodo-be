@@ -55,6 +55,11 @@
                         "format": "date-time",
                         "description": "The new date of the task in the format 'YYYY-MM-DDTHH:MM'"
                     },
+                    "recurring_task": {
+                        "type": "string",
+                        "pattern": "^(mo|tu|we|th|fr|sa|su)(;\\s?(mo|tu|we|th|fr|sa|su))*$",
+                        "description": "The days of the week when the task recurs, separated by semicolons. Use two-letter abbreviations: mo, tu, we, th, fr, sa, su."
+                    },
                     "label": {
                         "type": "string",
                         "description": "The label of the task"

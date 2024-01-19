@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "Task Management",
-        "description": "API for retrieving the current date.",
+        "description": "API for retrieving the current date and weekday",
         "version": "v1.0.0"
     },
     "servers": [
@@ -13,7 +13,7 @@
     "paths": {
         "/get_current_date": {
             "get": {
-                "description": "Retrieve the current date",
+                "description": "Retrieve the current date and weekday",
                 "operationId": "GetCurrentDate",
                 "responses": {
                     "200": {
@@ -21,8 +21,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "format": "date-time"
+                                    "type": "object",
+                                    "properties": {
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "weekday": {
+                                            "type": "string"
+                                        }
+                                    }
                                 }
                             }
                         }

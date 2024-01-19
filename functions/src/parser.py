@@ -8,6 +8,12 @@ def parse_subtasks(subtasks):
     else:
         return []
 
+def parse_recurring_task(recurring_task_string):
+    if recurring_task_string is not None:
+        return recurring_task_string.split(";")
+    else:
+        return []
+
 
 def parse_date(date_str):
     if date_str is not None:
