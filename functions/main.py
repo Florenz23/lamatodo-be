@@ -140,14 +140,19 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request()
 def getTasks(req: https_fn.Request) -> https_fn.Response:
+    data = req.get_json()
+    project_id = data.get('project_id', None)
+
+    if project_id is None:
+        return https_fn.Response("Project ID is required", status=400)
+
     # Create a reference to the user's tasks in the database
-    # user_tasks_ref = ref.child(FAKE_UID)
-    user_tasks_ref = ref_tasks
+    tasks_ref = ref_tasks
 
-    # Get all tasks
-    tasks = user_tasks_ref.get()
+    # Get tasks where the project_id is exactly equal to the provided project_id
+    project_tasks = tasks_ref.order_by_child('project_id').equal_to(project_id).get()
 
-    return https_fn.Response(json.dumps(tasks), mimetype='application/json')
+    return https_fn.Response(json.dumps(project_tasks), mimetype='application/json')
 
 @https_fn.on_request()
 def removeTask(req: https_fn.Request) -> https_fn.Response:

@@ -12,42 +12,27 @@
     ],
     "paths": {
         "/get_tasks": {
-            "get": {
+            "post": {
                 "description": "Retrieve all tasks",
                 "operationId": "GetTasks",
-                "responses": {
-                    "200": {
-                        "description": "Tasks retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Task"
+                "requestBody": {
+                    "description": "Project ID to filter tasks",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "project_id": {
+                                        "type": "string"
                                     }
-                                }
+                                },
+                                "required": ["project_id"]
                             }
                         }
                     }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "Task": {
-                "type": "object",
-                "properties": {
-                    "task": {
-                        "type": "string",
-                        "description": "The task"
-                    },
-                    "priority": {
-                        "type": "string",
-                        "description": "The priority of the task"
-                    }
                 },
-                "required": ["task"]
+                "responses": {}
             }
         }
     }
