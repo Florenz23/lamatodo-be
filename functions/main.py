@@ -38,7 +38,6 @@ TIMEZONE_USER = 'Europe/Berlin'
 
 
 
-
 @https_fn.on_request()
 def getCurrentDate(req: https_fn.Request) -> https_fn.Response:
     # Get the current date and time
@@ -138,7 +137,6 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
 
     # Return a success response
     return https_fn.Response(json.dumps(fields_to_update), status=200, mimetype='application/json')
-
 
 @https_fn.on_request()
 def getTasks(req: https_fn.Request) -> https_fn.Response:

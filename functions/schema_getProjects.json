@@ -1,0 +1,54 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Project Management",
+        "description": "API for retrieving projects",
+        "version": "v1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://getProjects-xamurzhima-uc.a.run.app"
+        }
+    ],
+    "paths": {
+        "/get_projects": {
+            "get": {
+                "description": "Retrieve all projects",
+                "operationId": "GetProjects",
+                "responses": {
+                    "200": {
+                        "description": "Projects retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Project"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Project": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "type": "string",
+                        "description": "The project"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "description": "The priority of the project"
+                    }
+                },
+                "required": ["project"]
+            }
+        }
+    }
+}

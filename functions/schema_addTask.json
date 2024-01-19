@@ -42,9 +42,13 @@
             "Task": {
                 "type": "object",
                 "properties": {
-                    "task": {
+                    "title": {
                         "type": "string",
-                        "description": "The task to add"
+                        "description": "the title of the task"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "the description of the task"
                     },
                     "priority": {
                         "type": "string",
@@ -67,10 +71,15 @@
                     "subtasks": {
                         "type": "string",
                         "description": "The subtasks of the task, separated by semicolons"
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "description": "The project_id of the task"
                     }
                 },
                 "required": [
-                    "task"
+                    "title",
+                    "project_id"
                 ]
             }
         }
