@@ -2,52 +2,59 @@
     "openapi": "3.1.0",
     "info": {
         "title": "Project Management",
-        "description": "API for retrieving projects",
-        "version": "v1.0.0"
+        "description": "API for retrieving projects by user ID",
+        "version": "v1.0.1"
     },
     "servers": [
         {
-            "url": "https://getProjects-xamurzhima-uc.a.run.app"
+            "url": "https://getprojects-xamurzhima-uc.a.run.app"
         }
     ],
     "paths": {
         "/get_projects": {
-            "get": {
-                "description": "Retrieve all projects",
+            "post": {
+                "description": "Retrieve all projects of a given user",
                 "operationId": "GetProjects",
-                "responses": {
-                    "200": {
-                        "description": "Projects retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Project"
+                "requestBody": {
+                    "description": "User ID to filter projects",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["user_id"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Successful operation",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "projects": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
+                        },
+                        "400": {
+                            "description": "Invalid user_id supplied"
                         }
                     }
                 }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "Project": {
-                "type": "object",
-                "properties": {
-                    "project": {
-                        "type": "string",
-                        "description": "The project"
-                    },
-                    "priority": {
-                        "type": "string",
-                        "description": "The priority of the project"
-                    }
-                },
-                "required": ["project"]
             }
         }
     }
