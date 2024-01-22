@@ -29,6 +29,7 @@ initialize_app(cred, {
 
 ref = db.reference('user_data')
 ref_tasks = ref.child('tasks')
+ref_user_auth = db.reference('user_auth')
 # ref = db.reference('tasks')
 
 #
@@ -193,10 +194,42 @@ def addProject(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request()
 def getProjects(req: https_fn.Request) -> https_fn.Response:
+    # Extract user_id from the request data
+    data = req.get_json()
+    user_id = data.get('user_id')
+
+    # Check if user_id is provided
+    if not user_id:
+        return https_fn.Response("no user_id provided", status=400)
+
     # Create a reference to the projects in the database
     projects_ref = ref.child('projects')
 
-    # Get all projects
-    all_projects = projects_ref.get()
+    # Get all projects of a given user_id
+    user_projects = projects_ref.order_by_child('user_id').equal_to(user_id).get()
 
-    return https_fn.Response(json.dumps(all_projects), mimetype='application/json')
+    return https_fn.Response(json.dumps(user_projects), mimetype='application/json')
+
+
+@https_fn.on_request()
+def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
+    data = req.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    # rest of your code
+
+    user_auth_ref = ref_user_auth.order_by_child('email').equal_to(email).get()
+
+    if not user_auth_ref:
+        new_user = ref_user_auth.push({
+            'email': email,
+            'password': password  # In a real-world application, never store passwords in plain text
+        })
+        return https_fn.Response(new_user.key)
+    else:
+        for user_id, user_info in user_auth_ref.items():
+            if user_info['password'] == password:
+                return https_fn.Response(user_id)
+            else:
+                return https_fn.Response('wrong password')

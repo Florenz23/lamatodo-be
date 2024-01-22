@@ -42,9 +42,17 @@
       "Task": {
         "type": "object",
         "properties": {
-          "task": {
+          "task_id": {
             "type": "string",
-            "description": "The task"
+            "description": "The ID of the task to be edited"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the task"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the task"
           },
           "done": {
             "type": "boolean",
@@ -71,11 +79,13 @@
           "subtasks": {
             "type": "string",
             "description": "The subtasks of the task, separated by semicolons"
+          },
+          "project_id": {
+            "type": "string",
+            "description": "The project ID the task belongs to"
           }
         },
-        "required": [
-          "task"
-        ]
+        "required": ["task_id"]
       },
       "EditTask": {
         "type": "object",
@@ -84,9 +94,11 @@
             "type": "string",
             "description": "The ID of the task to edit"
           },
-          "task": {
-            "type": "string",
-            "description": "The new task"
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
           },
           "done": {
             "type": "boolean",
@@ -113,6 +125,9 @@
           "subtasks": {
             "type": "string",
             "description": "The subtasks of the task, separated by semicolons"
+          },
+          "project_id": {
+            "type": "string"
           }
         },
         "required": [
