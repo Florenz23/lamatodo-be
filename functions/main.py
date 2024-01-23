@@ -208,6 +208,15 @@ def getProjects(req: https_fn.Request) -> https_fn.Response:
     # Get all projects of a given user_id
     user_projects = projects_ref.order_by_child('user_id').equal_to(user_id).get()
 
+    # If the user has no projects, create a default one
+    if not user_projects:
+        default_project = {
+            "name": "My Project",
+            "user_id": user_id
+        }
+        projects_ref.push(default_project)
+        user_projects = projects_ref.order_by_child('user_id').equal_to(user_id).get()
+
     return https_fn.Response(json.dumps(user_projects), mimetype='application/json')
 
 
