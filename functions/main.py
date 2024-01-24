@@ -226,7 +226,11 @@ def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
     email = data.get('email')
     password = data.get('password')
 
-    # rest of your code
+    if not email or not password:
+        return https_fn.Response({
+            'status': 'error',
+            'message': 'Missing email or password'
+        }, mimetype='application/json')
 
     user_auth_ref = ref_user_auth.order_by_child('email').equal_to(email).get()
 
@@ -235,10 +239,18 @@ def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
             'email': email,
             'password': password  # In a real-world application, never store passwords in plain text
         })
-        return https_fn.Response(new_user.key)
+        return https_fn.Response(json.dumps({
+            'status': 'new_user',
+            'user_id': new_user.key
+        }), mimetype='application/json')
     else:
         for user_id, user_info in user_auth_ref.items():
             if user_info['password'] == password:
-                return https_fn.Response(user_id)
+                return https_fn.Response(json.dumps({
+                    'status': 'login_success',
+                    'user_id': user_id
+                }), mimetype='application/json')
             else:
-                return https_fn.Response('wrong password')
+                return https_fn.Response(json.dumps({
+                    'status': 'wrong_password'
+                }), mimetype='application/json')

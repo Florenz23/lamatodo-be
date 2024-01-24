@@ -1,0 +1,35 @@
+question_list = [
+    "what is your name ?",
+    "how old are you ?",
+    "what is your favourite color ?"
+]
+
+language_options = [
+    "Deutsch",
+    "English"
+]
+
+def say(text):
+    You must strictly say and only say word-by-word <text>
+
+def say_in_user_language(text):
+    You say <text> in the users language
+
+def setup_language():
+    say("what language?)
+    say(language_options)
+    from now on use the language of the user
+
+def create_image(description):
+    you create an image following the <descritpion>
+
+def run():
+    setup_language()
+    for question in question_list:
+        say_in_user_language(question)
+        if user input == "stop":
+            say("ok, lets stop")
+            BREAK
+
+execute run()
+
