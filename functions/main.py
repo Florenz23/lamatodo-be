@@ -15,6 +15,8 @@ import pytz
 
 from src.parser import parse_subtasks, parse_date, parse_recurring_task
 
+from src.kpiTracking import KpiTracking
+
 
 credential_path = "lamatodo-be-1e97f3e1a9d8.json"
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
@@ -96,6 +98,10 @@ def addTask(req: https_fn.Request) -> https_fn.Response:
         'subtasks': subtasks,
         'date': date,
         'project_id': project_id,
+        'created_time': datetime.now().isoformat(),  # Add the created_time
+        'last_activity': datetime.now().isoformat()  # Add the last_activity
+
+
     }
     new_task_ref.set(new_task)
 
@@ -132,6 +138,10 @@ def editTask(req: https_fn.Request) -> https_fn.Response:
                     return https_fn.Response(str(e), status=400)
             else:
                 fields_to_update[field] = req.get_json().get(field)
+
+    fields_to_update['edit_time'] = datetime.now().isoformat()
+    fields_to_update['last_activity'] = datetime.now().isoformat()  # Add the last_activity
+
 
     # Update the task details
     task_ref.update(fields_to_update)
@@ -235,9 +245,11 @@ def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
     user_auth_ref = ref_user_auth.order_by_child('email').equal_to(email).get()
 
     if not user_auth_ref:
+        now = datetime.now()
         new_user = ref_user_auth.push({
             'email': email,
-            'password': password  # In a real-world application, never store passwords in plain text
+            'password': password,  # In a real-world application, never store passwords in plain text
+            'registration_date': now.isoformat()  # Store the registration timestamp
         })
         return https_fn.Response(json.dumps({
             'status': 'new_user',
@@ -254,3 +266,31 @@ def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
                 return https_fn.Response(json.dumps({
                     'status': 'wrong_password'
                 }), mimetype='application/json')
+
+
+@https_fn.on_request()
+def getKpis(req: https_fn.Request) -> https_fn.Response:
+    refs = {
+        'tasks': ref_tasks,
+        'user_auth': ref_user_auth
+    }
+
+    kpi = KpiTracking(refs)
+    kpis = {
+        'registrations_last_day': kpi.registrations_last_day(),
+        'registrations_last_7_days': kpi.registrations_last_7_days(),
+        'active_users_last_day': kpi.active_users_last_day(),
+        'active_users_last_7_days': kpi.active_users_last_7_days(),
+        'average_tasks_per_user': kpi.average_tasks_per_user(),
+        'median_tasks_per_user': kpi.median_tasks_per_user()
+        # 'tutorial_completion_rate': kpi.tutorial_completion_rate()
+    }
+
+    print("----------------------jaösdlkfjaösldkfjaösldfkjaösldkfjaösdklfjasd----------------------")
+
+    return https_fn.Response(json.dumps(kpis), mimetype='application/json')
+
+
+# if __name__ == "__main__":
+#     # Replace 'your_function' with the actual function you want to test
+#     getKpis({})
