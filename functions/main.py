@@ -17,6 +17,9 @@ from src.parser import parse_subtasks, parse_date, parse_recurring_task
 
 from src.kpiTracking import KpiTracking
 
+from flask import Flask
+app = Flask(__name__)
+
 
 credential_path = "lamatodo-be-1e97f3e1a9d8.json"
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
@@ -294,3 +297,4 @@ def getKpis(req: https_fn.Request) -> https_fn.Response:
 # if __name__ == "__main__":
 #     # Replace 'your_function' with the actual function you want to test
 #     getKpis({})
+
