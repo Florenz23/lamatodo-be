@@ -19,5 +19,23 @@
       "enabled": true
     },
     "singleProjectMode": true
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/date",
+        "function": "getCurrentDate"
+      },
+      {
+        "source": "/token",
+        "function": "validateToken"
+      }
+    ]
   }
 }

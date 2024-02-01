@@ -16,6 +16,8 @@ import pytz
 from src.parser import parse_subtasks, parse_date, parse_recurring_task
 
 from src.kpiTracking import KpiTracking
+import secrets
+
 
 from flask import Flask
 app = Flask(__name__)
@@ -234,7 +236,9 @@ def getProjects(req: https_fn.Request) -> https_fn.Response:
 
 
 @https_fn.on_request()
-def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
+def auth(req: https_fn.Request) -> https_fn.Response:
+    access_token = secrets.token_hex(16)  # 32 characters long token
+    auth_code = secrets.token_hex(16)  # 32 characters long token
     data = req.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -252,24 +256,44 @@ def loginUserWithEmail(req: https_fn.Request) -> https_fn.Response:
         new_user = ref_user_auth.push({
             'email': email,
             'password': password,  # In a real-world application, never store passwords in plain text
-            'registration_date': now.isoformat()  # Store the registration timestamp
+            'registration_date': now.isoformat(),
+            'access_token': access_token,
+            'auth_code': auth_code
         })
         return https_fn.Response(json.dumps({
             'status': 'new_user',
-            'user_id': new_user.key
+            'user_id': new_user.key,
+            'auth_code': auth_code  # return auth_code on successful registration
         }), mimetype='application/json')
     else:
         for user_id, user_info in user_auth_ref.items():
             if user_info['password'] == password:
                 return https_fn.Response(json.dumps({
                     'status': 'login_success',
-                    'user_id': user_id
+                    'user_id': user_id,
+                    'auth_code': user_info['auth_code']  # return auth_code on successful login
                 }), mimetype='application/json')
             else:
                 return https_fn.Response(json.dumps({
                     'status': 'wrong_password'
                 }), mimetype='application/json')
+                
 
+@https_fn.on_request()
+def validateToken(req: https_fn.Request) -> https_fn.Response:
+    # Generate tokens
+    access_token = secrets.token_hex(16)  # 32 characters long token
+    refresh_token = secrets.token_hex(16)  # 32 characters long token
+
+    # Updated data
+    token_data = {
+        'access_token': access_token,
+        'token_type': 'bearer',
+        'refresh_token': refresh_token,
+        'expires_in': 60 * 60 * 24 * 30 * 3  # 3 months
+    }
+
+    return https_fn.Response(json.dumps(token_data), mimetype='application/json')
 
 @https_fn.on_request()
 def getKpis(req: https_fn.Request) -> https_fn.Response:
