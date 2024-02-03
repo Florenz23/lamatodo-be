@@ -5,8 +5,9 @@
 from firebase_admin import db
 
 
-from firebase_functions import https_fn,options
+from firebase_functions import https_fn,options,logger
 from firebase_admin import initialize_app, credentials
+
 import os
 import json
 from datetime import datetime
@@ -18,9 +19,9 @@ from src.parser import parse_subtasks, parse_date, parse_recurring_task
 from src.kpiTracking import KpiTracking
 import secrets
 
-import urllib
 from urllib.parse import parse_qs
 
+import logging
 
 
 from flask import Flask
@@ -287,69 +288,36 @@ def auth(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(cors=options.CorsOptions(cors_origins="*", cors_methods=["get", "post"]))
 def token(req: https_fn.Request) -> https_fn.Response:
+    # debug_token = {
+    #     "access_token": "a15aeb28c5494e7d945087f2d6681754",
+    #     "token_type": "bearer"
+    # }
+    # return https_fn.Response(json.dumps(debug_token), mimetype='application/json')
     timestamp = datetime.now().isoformat()
-
-    debug_token = {
-        "access_token": "a15aeb28c5494e7d945087f2d6681754",
-        "token_type": "bearer"
-    }
-
-    if req.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
-        # Parse the body of the request and store it in a variable
-        body = parse_qs(req.get_data(as_text=True))
-        request_data_keys = ', '.join(body.keys()) if body.keys() else "empty"
-        ref_log.push({
-            "timestamp": timestamp,
-            "request_keys_strint": body,
-            "request_data_keys": request_data_keys,
-        })
-        obj = {
-            "access_token": "a15aeb28c5494e7d945087f2d6681754",
-            "token_type": "bearer",
-            "status": "is x-form"
-        }
-        return https_fn.Response(json.dumps(obj), mimetype='application/json')
-
-
-    request_keys_strint  = ', '.join(req.keys()) if req.keys() else "empty"
-    ref_log.push({
-        "timestamp": timestamp,
-        "request_keys_strint": request_keys_strint
-    })
-
     request_type = req.method
     request_headers = dict(req.headers)
-
-    requ_data_keys = ', '.join(req.args.keys()) if req.args.keys() else "empty"
 
     ref_log.push({
         "timestamp": timestamp,
         "request_type": request_type,
         "headers": request_headers,
-        # "data" : data,
-        "data" : "jojo",
-        "request_params" : req.args,
-        "request_data_keys" : requ_data_keys,
-        # "request_body" : req.data,
-
-        # "data" : data
-
     })
 
-    # rest of your code
-    return https_fn.Response(json.dumps(debug_token), mimetype='application/json')
+    if req.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
+        # Parse the body of the request and store it in a variable
+        body = parse_qs(req.get_data(as_text=True))
+        auth_code = body.get('code', None)[0]
 
-    data = req.get_json()
-    ref_test.set(data)
-    code = data.get('code')
-    # Query ref_user_auth for a user with the provided auth_code
-    user_auth = ref_user_auth.order_by_child('auth_code').equal_to(code).get()
+    else : 
+        # return json saying that the request is not x-form
+        return https_fn.Response(json.dumps({'status': 'not x-form'}), mimetype='application/json')
 
-    # Check if the query returned any results
+
+    user_auth = ref_user_auth.order_by_child('auth_code').equal_to(auth_code).get()
+
     if not user_auth:
         # Store the request data in ref_test
-        ref_test.set(data)
-        return https_fn.Response(json.dumps({'message': 'Unauthorized','code':code}), status=401, mimetype='application/json')
+        return https_fn.Response(json.dumps({'message': 'Unauthorized'}), status=401, mimetype='application/json')
 
     # Get the first record from user_auth
     first_record_key = next(iter(user_auth))
