@@ -34,7 +34,7 @@
       },
       {
         "source": "/token",
-        "function": "validateToken"
+        "function": "token"
       }
     ]
   }
