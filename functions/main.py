@@ -213,12 +213,26 @@ def addProject(req: https_fn.Request) -> https_fn.Response:
 
     return https_fn.Response(f"project_id: {new_project_ref.key}")
 
-
+# it will not recieve user_id anymore but an access token in the header like
+# (“Authorization”: “[Bearer/Basic][user’s token]”).
+# The function will then use the token to identify the user and return the projects of that user.
 @https_fn.on_request()
 def getProjects(req: https_fn.Request) -> https_fn.Response:
+    authorization_header = req.headers.get('Authorization')
+    logger.info(authorization_header)
+    access_token = authorization_header.split('Bearer ')[-1]
+    logger.info(access_token)
+    user_auth = ref_user_auth.order_by_child('access_token').equal_to(access_token).get()
+    if not user_auth:
+        # Store the request data in ref_test
+        return https_fn.Response(json.dumps({'message': 'Unauthorized'}), status=401, mimetype='application/json')
+
+    # Get the first record from user_auth
+    first_record_key = next(iter(user_auth))
+    user_record = user_auth[first_record_key]
+    logger.info(user_record)
+    user_id = first_record_key
     # Extract user_id from the request data
-    data = req.get_json()
-    user_id = data.get('user_id')
 
     # Check if user_id is provided
     if not user_id:
