@@ -35,6 +35,10 @@
       {
         "source": "/token",
         "function": "token"
+      },
+      {
+        "source": "/getprojects",
+        "function": "getProjects"
       }
     ]
   }
