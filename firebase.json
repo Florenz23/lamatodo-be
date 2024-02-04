@@ -29,16 +29,8 @@
     ],
     "rewrites": [
       {
-        "source": "/date",
-        "function": "getCurrentDate"
-      },
-      {
-        "source": "/token",
-        "function": "token"
-      },
-      {
-        "source": "/getprojects",
-        "function": "getProjects"
+        "source": "/**",
+        "function": "lamatodo"
       }
     ]
   }
