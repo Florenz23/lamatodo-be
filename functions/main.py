@@ -71,8 +71,8 @@ def add_task():
         "done": "false",
         'priority': req_data.get('priority'),
         'label': req_data.get('label'),
-        'recurring_task': parse_recurring_task(req_data.get('recurring_task')),
-        'subtasks': parse_subtasks(req_data.get('subtasks')),
+        'recurring_task': req_data.get('recurring_task'),
+        'subtasks': req_data.get('subtasks'),
         'date': parse_date(req_data.get('date')),
         'project_id': project_id,
         'created_time': datetime.now().isoformat(),
@@ -83,17 +83,51 @@ def add_task():
     new_task['task_id'] = new_task_ref.key
     return jsonify(new_task), 201
 
-@app.route('/editTask/<task_id>', methods=['PUT'])
-def edit_task(task_id):
-    req_data = request.json
-    task_ref = ref_tasks.child(task_id)
-    task_ref.update(req_data)
-    return jsonify({"success": True, "task_id": task_id}), 200
 
-@app.route('/removeTask/<task_id>', methods=['DELETE'])
-def remove_task(task_id):
-    ref_tasks.child(task_id).delete()
-    return jsonify({"success": True, "message": "Task removed successfully", "task_id": task_id}), 200
+@app.route('/editTask', methods=['POST'])
+def edit_task():
+    req_data = request.json
+
+    if not req_data:
+        return jsonify({"error": "No data provided"}), 400
+
+    task_id = req_data.get('task_id', None)
+    if task_id is None:
+        return jsonify({"error": "Task ID not provided"}), 400
+
+    task_ref = ref_tasks.child(task_id)
+
+    fields_to_update = {}
+    for field in ['title', 'description', 'done', 'priority', 'label', 'recurring_task', 'subtasks', 'date', 'project_id']:
+        if field in req_data:
+            if field == 'recurring_task':
+                fields_to_update[field] = parse_recurring_task(req_data.get(field))
+            elif field == 'subtasks':
+                fields_to_update[field] = parse_subtasks(req_data.get(field))
+            elif field == 'date':
+                try:
+                    fields_to_update[field] = parse_date(req_data.get(field))
+                except ValueError as e:
+                    return jsonify({"error": str(e)}), 400
+            else:
+                fields_to_update[field] = req_data.get(field)
+
+    fields_to_update['edit_time'] = datetime.now().isoformat()
+    fields_to_update['last_activity'] = datetime.now().isoformat()
+
+    task_ref.update(fields_to_update)
+
+    return jsonify(fields_to_update), 200
+
+@app.route('/removeTask', methods=['POST'])
+def remove_task():
+    data = request.json
+    task_id = data.get('task_id')
+    if task_id:
+        ref_tasks.child(task_id).delete()
+        return jsonify({"success": True, "message": "Task removed successfully", "task_id": task_id}), 200
+    else:
+        return jsonify({"success": False, "message": "No task_id provided"}), 400
 
 # Additional routes for other functionalities can be added similarly.
 

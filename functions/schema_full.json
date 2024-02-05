@@ -11,13 +11,265 @@
         }
     ],
     "paths": {
-        "/getprojects": {
-            "post": {
+        "/getProjects": {
+            "get": {
                 "description": "Retrieve all projects of a given user",
                 "operationId": "GetProjects"
             }
         },
-        "/date": {
+        "/getTasks": {
+            "post": {
+                "description": "Retrieve all tasks of a given project",
+                "operationId": "GetTasks",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "The ID of the project"
+                                    }
+                                },
+                                "required": ["project_id"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addTask": {
+            "post": {
+                "description": "Add a new task to the database",
+                "operationId": "AddTask",
+                "requestBody": {
+                    "description": "Data required to create a new task",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "description": "The title of the task"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "The description of the task"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "description": "The priority level of the task"
+                                    },
+                                    "label": {
+                                        "type": "string",
+                                        "description": "The label associated with the task"
+                                    },
+                                    "recurring_task": {
+                                        "type": "boolean",
+                                        "description": "Whether the task is recurring"
+                                    },
+                                    "subtasks": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "title": {"type": "string"},
+                                                "done": {"type": "boolean"}
+                                            },
+                                            "required": ["title", "done"]
+                                        },
+                                        "description": "Subtasks of the task"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "The due date of the task"
+                                    },
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "The ID of the project this task belongs to"
+                                    }
+                                },
+                                "required": ["title", "project_id"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Task created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {"type": "string"},
+                                        "description": {"type": "string"},
+                                        "done": {"type": "string"},
+                                        "priority": {"type": "string"},
+                                        "label": {"type": "string"},
+                                        "recurring_task": {"type": "boolean"},
+                                        "subtasks": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {"type": "string"},
+                                                    "done": {"type": "boolean"}
+                                                }
+                                            }
+                                        },
+                                        "date": {"type": "string", "format": "date-time"},
+                                        "project_id": {"type": "string"},
+                                        "created_time": {"type": "string", "format": "date-time"},
+                                        "last_activity": {"type": "string", "format": "date-time"},
+                                        "task_id": {"type": "string"}
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request, missing task title or project_id"
+                    }
+                }
+            }
+        },
+        "/editTask": {
+            "post": {
+                "description": "Edit an existing task in the database",
+                "operationId": "EditTask",
+                "requestBody": {
+                    "description": "Data required to edit an existing task",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "task_id": {
+                                        "type": "string",
+                                        "description": "The ID of the task to be edited"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "The new title of the task"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "The new description of the task"
+                                    },
+                                    "done": {
+                                        "type": "boolean",
+                                        "description": "The new done status of the task"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "description": "The new priority of the task"
+                                    },
+                                    "label": {
+                                        "type": "string",
+                                        "description": "The new label of the task"
+                                    },
+                                    "recurring_task": {
+                                        "type": "string",
+                                        "description": "The new recurring task status of the task"
+                                    },
+                                    "subtasks": {
+                                        "type": "array",
+                                        "description": "The new subtasks of the task",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "title": {"type": "string"},
+                                                "done": {"type": "boolean"}
+                                            },
+                                            "required": ["title", "done"]
+                                        }
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "description": "The new date of the task"
+                                    },
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "The new project ID of the task"
+                                    }
+                                },
+                                "required": ["task_id"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/removeTask": {
+            "post": {
+                "description": "Remove a task",
+                "operationId": "RemoveTask",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "task_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["task_id"]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task removed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "task_id": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No task_id provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getCurrentDate": {
             "get": {
                 "description": "Retrieve the current date and weekday",
                 "operationId": "GetCurrentDate",
