@@ -101,9 +101,9 @@ def edit_task():
     for field in ['title', 'description', 'done', 'priority', 'label', 'recurring_task', 'subtasks', 'date', 'project_id']:
         if field in req_data:
             if field == 'recurring_task':
-                fields_to_update[field] = parse_recurring_task(req_data.get(field))
+                fields_to_update[field] = req_data.get('recurring_task')
             elif field == 'subtasks':
-                fields_to_update[field] = parse_subtasks(req_data.get(field))
+                fields_to_update[field] = req_data.get('subtasks')
             elif field == 'date':
                 try:
                     fields_to_update[field] = parse_date(req_data.get(field))

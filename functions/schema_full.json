@@ -32,7 +32,36 @@
                                         "description": "The ID of the project"
                                     }
                                 },
-                                "required": ["project_id"]
+                                "required": [
+                                    "project_id"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addProject": {
+            "post": {
+                "description": "Add a new project to the database",
+                "operationId": "AddProject",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "user_id"
+                                ]
                             }
                         }
                     }
@@ -68,18 +97,41 @@
                                         "description": "The label associated with the task"
                                     },
                                     "recurring_task": {
-                                        "type": "boolean",
-                                        "description": "Whether the task is recurring"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "day": {
+                                                    "type": "string",
+                                                    "pattern": "^(mo|tu|we|th|fr|sa|su)$"
+                                                },
+                                                "time": {
+                                                    "type": "string",
+                                                    "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+                                                }
+                                            },
+                                            "required": [
+                                                "day"
+                                            ]
+                                        },
+                                        "description": "An array of objects. Each object represents a recurring task with a specific day and time. While the time is optional."
                                     },
                                     "subtasks": {
                                         "type": "array",
                                         "items": {
                                             "type": "object",
                                             "properties": {
-                                                "title": {"type": "string"},
-                                                "done": {"type": "boolean"}
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "done": {
+                                                    "type": "boolean"
+                                                }
                                             },
-                                            "required": ["title", "done"]
+                                            "required": [
+                                                "title",
+                                                "done"
+                                            ]
                                         },
                                         "description": "Subtasks of the task"
                                     },
@@ -93,7 +145,10 @@
                                         "description": "The ID of the project this task belongs to"
                                     }
                                 },
-                                "required": ["title", "project_id"]
+                                "required": [
+                                    "title",
+                                    "project_id"
+                                ]
                             }
                         }
                     }
@@ -106,27 +161,56 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "title": {"type": "string"},
-                                        "description": {"type": "string"},
-                                        "done": {"type": "string"},
-                                        "priority": {"type": "string"},
-                                        "label": {"type": "string"},
-                                        "recurring_task": {"type": "boolean"},
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "done": {
+                                            "type": "string"
+                                        },
+                                        "priority": {
+                                            "type": "string"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        },
+                                        "recurring_task": {
+                                            "type": "boolean"
+                                        },
                                         "subtasks": {
                                             "type": "array",
                                             "items": {
                                                 "type": "object",
                                                 "properties": {
-                                                    "title": {"type": "string"},
-                                                    "done": {"type": "boolean"}
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "done": {
+                                                        "type": "boolean"
+                                                    }
                                                 }
                                             }
                                         },
-                                        "date": {"type": "string", "format": "date-time"},
-                                        "project_id": {"type": "string"},
-                                        "created_time": {"type": "string", "format": "date-time"},
-                                        "last_activity": {"type": "string", "format": "date-time"},
-                                        "task_id": {"type": "string"}
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "project_id": {
+                                            "type": "string"
+                                        },
+                                        "created_time": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "last_activity": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "task_id": {
+                                            "type": "string"
+                                        }
                                     }
                                 }
                             }
@@ -175,20 +259,43 @@
                                         "description": "The new label of the task"
                                     },
                                     "recurring_task": {
-                                        "type": "string",
-                                        "description": "The new recurring task status of the task"
-                                    },
-                                    "subtasks": {
                                         "type": "array",
-                                        "description": "The new subtasks of the task",
                                         "items": {
                                             "type": "object",
                                             "properties": {
-                                                "title": {"type": "string"},
-                                                "done": {"type": "boolean"}
+                                                "day": {
+                                                    "type": "string",
+                                                    "pattern": "^(mo|tu|we|th|fr|sa|su)$"
+                                                },
+                                                "time": {
+                                                    "type": "string",
+                                                    "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+                                                }
                                             },
-                                            "required": ["title", "done"]
-                                        }
+                                            "required": [
+                                                "day"
+                                            ]
+                                        },
+                                        "description": "An array of objects. Each object represents a recurring task with a specific day and time. While the time is optional."
+                                    },
+                                    "subtasks": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "done": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "title",
+                                                "done"
+                                            ]
+                                        },
+                                        "description": "Subtasks of the task"
                                     },
                                     "date": {
                                         "type": "string",
@@ -199,7 +306,9 @@
                                         "description": "The new project ID of the task"
                                     }
                                 },
-                                "required": ["task_id"]
+                                "required": [
+                                    "task_id"
+                                ]
                             }
                         }
                     }
@@ -220,7 +329,9 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": ["task_id"]
+                                "required": [
+                                    "task_id"
+                                ]
                             }
                         }
                     },
