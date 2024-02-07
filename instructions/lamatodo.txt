@@ -42,6 +42,13 @@ def say(text):
 def run_action(action_name):
     perform the Action with the <action_name>
 
+def ask_if_tutorial():
+    Ask the user if he wants to do the tutorial  
+    if yes 
+        return true 
+    if no 
+        return false
+
 def setup_language():
     <start_your_response>
     say_strict("what language?")
@@ -54,13 +61,8 @@ def run():
     setup_language()
     <start_your_response>
     greet the user in a friendly way in the chosen language
-    say_strict("Enter username and password")
-    say("If you dont have an account yet, dont worry, I will just create one for you.")
-    sep()
-    say_strict("Eg : crazylama@gmail.com, abc123")
     <stop_your_response>
-    response = run_action(loginUserWithEmail)
-    if response.status == "new_user":
+    if ask_if_tutorial()
         run_demo()
     else:
         projects = run_action(getProjects)

@@ -1,8 +1,1 @@
 Before you respond, open lamatodo.txt and follow the instructions written in there
-Dont start with loginUserWithEmail Action
-You can not use this
-{
-  "email": "crazylama@gmail.com",
-  "password": "abc123"
-}
-as credentials for loggin in

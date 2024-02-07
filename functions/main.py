@@ -213,6 +213,14 @@ def get_users():
     all_users = ref_user_auth.get()
     return jsonify(all_users), 200
 
+@app.route('/getKpis', methods=['GET'])
+def getKpis():
+    refs = {
+        'tasks': ref_tasks,
+        'user_auth': ref_user_auth
+    }
+    kpi = KpiTracking(refs)
+    return jsonify({"ok": "ok"}), 200
 
 @https_fn.on_request()
 def lamatodo(req: https_fn.Request) -> https_fn.Response:
