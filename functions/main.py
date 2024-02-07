@@ -157,7 +157,20 @@ def get_projects():
         return jsonify({"error": "Unauthorized"}), 401
 
     user_id = next(iter(user_auth))
-    user_projects = ref.child('projects').order_by_child('user_id').equal_to(user_id).get()
+    if not user_id:
+        return jsonify({"error": "no user_id provided"}), 400
+
+    projects_ref = ref.child('projects')
+    user_projects = projects_ref.order_by_child('user_id').equal_to(user_id).get()
+
+    if not user_projects:
+        default_project = {
+            "name": "My Project",
+            "user_id": user_id
+        }
+        projects_ref.push(default_project)
+        user_projects = projects_ref.order_by_child('user_id').equal_to(user_id).get()
+
     return jsonify(user_projects), 200
 
 @app.route('/auth', methods=['POST'])
