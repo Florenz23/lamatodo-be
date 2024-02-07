@@ -11,6 +11,7 @@ from datetime import datetime
 import pytz
 import secrets
 from urllib.parse import parse_qs
+import json
 
 from firebase_admin import credentials, initialize_app, db
 from src.parser import parse_subtasks, parse_date, parse_recurring_task
@@ -220,6 +221,17 @@ def getKpis():
         'user_auth': ref_user_auth
     }
     kpi = KpiTracking(refs)
+    kpis = {
+        'registrations_last_day': kpi.registrations_last_day(),
+        'registrations_last_7_days': kpi.registrations_last_7_days(),
+        'active_users_last_day': kpi.active_users_last_day(),
+        'active_users_last_7_days': kpi.active_users_last_7_days(),
+        'average_tasks_per_project': kpi.average_tasks_per_project(),
+        'median_tasks_per_project': kpi.median_tasks_per_project()
+        # 'tutorial_completion_rate': kpi.tutorial_completion_rate()
+    }
+
+    return https_fn.Response(json.dumps(kpis), mimetype='application/json')
     return jsonify({"ok": "ok"}), 200
 
 @https_fn.on_request()
