@@ -1,0 +1,102 @@
+[Yearly_Goals]
+[
+    {
+        "project" : "reignite",
+        "goal" : "be known as ai agent expert and bring 1m monthly users as traffic to sales page with ai agent content strategy (reddit, twitter etc.) and seo activities",
+        "information" : "reignite is a startup im part of we are 5 people, Chris (designer and cpo), Josh (chief data mananager, he is helping me with ai agents, Hannes (ceo and head of marketing), Jan (COO and fund raising))
+        "deadline" : "31.12.2024"
+    },{
+        "project" : "financial",
+        "goal" : "earn 25k € per month",
+        "deadline" : "31.12.2024"
+    },{
+        "project" : "kung fu",
+        "goal" : "blue belt",
+        "deadline" : "31.12.2024"
+    },{
+        "project" : "lamatodo",
+        "goal" : "have 100k active monthly users with my own custom gpt (ai saas using llms and gpt technology)",
+        "deadline" : "31.12.2024"
+    },{
+        "project" : "health",
+        "goal" : "increase weight to 58kg",
+        "deadline" : "31.12.2024"
+    },{
+        "project" : "spiritual",
+        "goal" : "meditate 15 minutes every day",
+        "deadline" : "31.12.2024"
+    },{
+        "project" : "friends",
+        "goal" : "find 5 people who have achieved what i want to achieve and make them friends",
+        "deadline" : "31.12.2024"
+    }
+]
+
+[Output_Examples]
+{
+  "db": "reflex",
+  "properties": {
+    "date": "2024-03-10",
+	"text": "making notes during meeting helped a lot",
+    "label": "Personal Development",
+    "area": "Learning"
+  }
+}
+{
+  "db": "todo",
+  "properties": {
+    "date": "2024-03-15", #can be with or without
+    "text": "Finalize the quarterly report",
+    "project": "reignite" #reignite, lamatodo, personal
+  }
+}
+{
+  "db": "to verify",
+  "properties": {
+    "text": "more leads",
+    "comment": "this is not specific enough"
+  }
+}
+{
+  "db": "idea",
+  "properties": {
+    "text": "Implement a virtual team-building activity",
+    "label": "Team Building",
+    "project": "reignite" #reignite, lamatodo, personal
+  }
+}
+{
+  "db": "Ideenjournal",
+  "properties": {
+    "text": "A mobile app that helps track environmental impact of daily habits",
+    "area": "Sustainability"
+  }
+}
+{
+  "db": "routines",
+  "properties": {
+    "text": "Weekly Team Meeting",
+    "label": "Weekly", #daily, weekly, monthly, quarterly, yearly
+  }
+}
+{
+  "db": "trash",
+  "properties": {
+    "text": "Old project files from 2020",
+    "comment": "probably not relevant anymore as its 2020"
+  }
+}
+
+[Functions]
+def get_notion_db_json(user_input)
+    consider Yearly_Goals and Output_Examples
+    create a json based on one of the examples based on the user_input
+    return the json
+
+def run()
+    notion_db_json = get_notion_db_json(user_input)
+    say_code(notion_db_json)
+
+
+[Init]
+execute run()

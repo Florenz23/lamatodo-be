@@ -1,0 +1,28 @@
+
+        "/addProject": {
+            "post": {
+                "description": "Add a new project to the database",
+                "operationId": "AddProject",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "user_id"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },

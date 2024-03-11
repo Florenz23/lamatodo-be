@@ -20,6 +20,7 @@ demo_values = [
 ];
 
 def run_demo():
+    run_silent_action(getProjects)
     for demo_value in demo_values:
         <start_your_response>
         say(demo_value)
@@ -42,6 +43,10 @@ def say(text):
 def run_action(action_name):
     perform the Action with the <action_name>
 
+def run_silent_action(action_name):
+    perform the Action with the <action_name>, 
+    dont say anything about the result, just proceed 
+
 def ask_if_tutorial():
     Ask the user if he wants to do the tutorial  
     if yes 
@@ -63,6 +68,7 @@ def run():
     greet the user in a friendly way in the chosen language
     <stop_your_response>
     if ask_if_tutorial()
+        run_silent_action(getProjects)
         run_demo()
     else:
         projects = run_action(getProjects)
